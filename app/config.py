@@ -15,7 +15,14 @@ class Config:
 
     # Flask
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-change-me-in-production")
-    DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    # Never enable debug on Render / production hosts
+    _on_render = os.environ.get("RENDER", "").lower() in ("true", "1", "yes")
+    _prod = os.environ.get("FLASK_ENV", "").lower() == "production"
+    DEBUG = (
+        os.getenv("FLASK_DEBUG", "false").lower() == "true"
+        and not _on_render
+        and not _prod
+    )
 
     # Database (SQLite)
     DATABASE_PATH = os.getenv(

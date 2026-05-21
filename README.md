@@ -55,7 +55,10 @@ osint-project/
 ├── instance/                 # SQLite database (created at runtime)
 ├── screenshots/              # Profile screenshots (runtime)
 ├── exports/                  # Generated JSON/PDF files (runtime)
-├── run.py                    # Start the server
+├── run.py                    # Local dev server (python run.py)
+├── wsgi.py                   # Production WSGI entry (Gunicorn / Render)
+├── render.yaml               # Render.com deployment config
+├── Procfile                  # Alternative start command for PaaS
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -123,6 +126,38 @@ python run.py
 ```
 
 Open **http://127.0.0.1:5000** in your browser.
+
+---
+
+## Deploy on Render
+
+Render requires your app to listen on **`0.0.0.0`** at the port in the **`PORT`** environment variable. Use **Gunicorn** (not Flask’s dev server).
+
+### Option A — Blueprint (`render.yaml` in repo)
+
+1. Push this repo to GitHub.
+2. In Render: **New → Blueprint** → connect the repo.
+3. Render uses `render.yaml` automatically:
+   - **Build:** `pip install -r requirements.txt`
+   - **Start:** `gunicorn --bind 0.0.0.0:$PORT wsgi:app`
+
+### Option B — Manual Web Service
+
+| Setting | Value |
+|--------|--------|
+| **Build Command** | `pip install -r requirements.txt` |
+| **Start Command** | `gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 wsgi:app` |
+| **Environment** | `FLASK_DEBUG=false`, `SCREENSHOTS_ENABLED=false`, `RENDER=true` |
+
+### Why “No open ports detected on 0.0.0.0”?
+
+| Cause | Fix |
+|-------|-----|
+| Start command is `python run.py` with `HOST=127.0.0.1` | Use **Gunicorn** + `0.0.0.0:$PORT` |
+| App crashes before binding | Check Render **Logs** for Python traceback |
+| Wrong module | Use `wsgi:app` or `run:app`, not `app.py` |
+
+Local dev is unchanged: `python run.py` → `127.0.0.1:5000`.
 
 ---
 

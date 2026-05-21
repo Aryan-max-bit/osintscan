@@ -1,7 +1,16 @@
 # OSINT Username Finder — Python dependencies
+
+# Web framework
 Flask>=3.0.0
+gunicorn>=22.0.0
 python-dotenv>=1.0.0
+
+# API / async scanning
 aiohttp>=3.9.0
 Flask-Limiter>=3.5.0
+
+# Reports
 reportlab>=4.0.0
+
+# Screenshots (optional — disable on Render via SCREENSHOTS_ENABLED=false)
 playwright>=1.40.0

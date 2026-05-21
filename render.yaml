@@ -1,0 +1,21 @@
+# Render.com deployment — https://render.com/docs/yaml-spec
+services:
+  - type: web
+    name: osint-username-finder
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 wsgi:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: RENDER
+        value: "true"
+      - key: FLASK_DEBUG
+        value: "false"
+      - key: FLASK_ENV
+        value: production
+      - key: SCREENSHOTS_ENABLED
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
