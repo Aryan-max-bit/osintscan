@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSINT Username Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">OSINT<span class="accent">Scan</span></span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#dashboard" class="nav-link active" data-section="dashboard">
+        <span class="nav-icon">▣</span> Dashboard
+      </a>
+      <a href="#search" class="nav-link" data-section="search">
+        <span class="nav-icon">⌕</span> Search
+      </a>
+      <a href="#results" class="nav-link" data-section="results">
+        <span class="nav-icon">◎</span> Results
+      </a>
+      <a href="#history" class="nav-link" data-section="history">
+        <span class="nav-icon">⏱</span> History
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <small>Educational OSINT Tool</small>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-wrapper">
+    <header class="navbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+      <h1 class="page-title">Username Intelligence</h1>
+      <div class="navbar-status">
+        <span class="status-dot" id="apiStatus"></span>
+        <span id="sitesCount">— sites</span>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Dashboard -->
+      <section id="dashboard" class="section active">
+        <div class="stats-grid">
+          <article class="stat-card glass">
+            <h3>Total Searches</h3>
+            <p class="stat-value" id="statSearches">0</p>
+          </article>
+          <article class="stat-card glass">
+            <h3>Profiles Found</h3>
+            <p class="stat-value accent" id="statFound">0</p>
+          </article>
+          <article class="stat-card glass">
+            <h3>Unique Usernames</h3>
+            <p class="stat-value" id="statUsernames">0</p>
+          </article>
+          <article class="stat-card glass">
+            <h3>Avg Response</h3>
+            <p class="stat-value"><span id="statAvgMs">0</span> ms</p>
+          </article>
+        </div>
+        <div class="charts-row">
+          <article class="chart-card glass">
+            <h3>Last Scan Breakdown</h3>
+            <canvas id="resultsChart"></canvas>
+          </article>
+          <article class="chart-card glass">
+            <h3>Response Times (Top 10)</h3>
+            <canvas id="responseChart"></canvas>
+          </article>
+        </div>
+      </section>
+
+      <!-- Search -->
+      <section id="search" class="section">
+        <article class="search-card glass">
+          <h2>Scan Username</h2>
+          <p class="subtitle">Check presence across 50+ platforms asynchronously</p>
+          <form id="searchForm" class="search-form">
+            <div class="input-group">
+              <span class="input-prefix">@</span>
+              <input type="text" id="usernameInput" placeholder="Enter username..." autocomplete="off" maxlength="32" required>
+            </div>
+            <label class="checkbox-label">
+              <input type="checkbox" id="screenshotsCheck" checked>
+              Capture screenshots (slower)
+            </label>
+            <button type="submit" class="btn-primary" id="searchBtn">
+              <span class="btn-text">Start Scan</span>
+            </button>
+          </form>
+          <div class="loader hidden" id="loader">
+            <div class="loader-ring"></div>
+            <p>Scanning platforms… <span id="loaderProgress">0</span>%</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- Results -->
+      <section id="results" class="section">
+        <div class="results-header">
+          <h2>Scan Results <span id="resultsUsername" class="accent"></span></h2>
+          <div class="export-actions">
+            <button class="btn-secondary" id="exportJsonBtn" disabled>Export JSON</button>
+            <button class="btn-secondary" id="exportPdfBtn" disabled>Export PDF</button>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="found">Found</button>
+          <button class="filter-btn" data-filter="not_found">Not Found</button>
+          <button class="filter-btn" data-filter="error">Errors</button>
+        </div>
+        <div class="results-grid" id="resultsGrid">
+          <p class="empty-state">Run a search to see results here.</p>
+        </div>
+      </section>
+
+      <!-- History -->
+      <section id="history" class="section">
+        <h2>Search History</h2>
+        <div class="history-table-wrap glass">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Found</th>
+                <th>Total</th>
+                <th>Avg ms</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="historyBody">
+              <tr><td colspan="6" class="empty-state">No history yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
