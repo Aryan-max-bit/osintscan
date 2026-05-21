@@ -10,6 +10,17 @@ Built for learning, CTF practice, and authorized security research. **Only use o
 
 ---
 
+## 📸 Screenshots
+
+### Search Page
+![Search](screenshot/search.png)
+
+### Dashboard
+![Dashboard](screenshot/dashboard.png)
+
+### Results
+![Results](screenshot/result.png)
+
 ## Features
 
 | Feature | Description |
